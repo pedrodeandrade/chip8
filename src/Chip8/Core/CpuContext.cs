@@ -6,5 +6,5 @@ public sealed class CpuContext
 
     public Registers Registers { get; } = new();
 
-    public Stack<short> Stack { get; } = new(16);
+    public Stack<ushort> Stack { get; } = new(16);
 }
