@@ -1,8 +1,10 @@
+using Chip8.Core.Pipeline;
+
 namespace Chip8.Core;
 
 public static class Cpu
 {
-    private const short InitialAddress = 0x200;
+    private const ushort InitialAddress = 0x200;
 
     private static readonly CpuContext _context = new();
 
@@ -11,6 +13,40 @@ public static class Cpu
         InitFonts();
         InitMemory();
         InitPc();
+    }
+
+    public static void Start()
+    {
+        while (true)
+        {
+            ExecuteInstruction(DecodeInstruction(FetchInstruction()));
+        }
+    }
+
+    public static void LoadProgram(byte[] program)
+    {
+        var initialAddress = InitialAddress;
+
+        foreach (var programByte in program)
+        {
+            _context.Memory[initialAddress] = programByte;
+            initialAddress++;
+        }
+    }
+
+    private static ushort FetchInstruction()
+    {
+        return InstructionFetcher.Fetch(_context);
+    }
+
+    private static int DecodeInstruction(ushort instruction)
+    {
+        throw new NotImplementedException();
+    }
+
+    private static void ExecuteInstruction(int instruction)
+    {
+        throw new NotImplementedException();
     }
 
     private static void InitFonts()
