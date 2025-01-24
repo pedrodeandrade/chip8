@@ -2,20 +2,21 @@ using Chip8.Core.Pipeline;
 
 namespace Chip8.Core;
 
-public static class Cpu
+public sealed class Cpu
 {
     private const ushort InitialAddress = 0x200;
 
-    private static readonly CpuContext _context = new();
+    private readonly CpuContext _context;
 
-    static Cpu()
+    public Cpu(CpuContext context)
     {
+        _context = context;
         InitFonts();
         InitMemory();
         InitRegisters();
     }
 
-    public static void Start()
+    public void Start()
     {
         while (true)
         {
@@ -23,7 +24,7 @@ public static class Cpu
         }
     }
 
-    public static void LoadProgram(ReadOnlySpan<byte> program)
+    public void LoadProgram(ReadOnlySpan<byte> program)
     {
         var initialAddress = InitialAddress;
 
@@ -34,13 +35,13 @@ public static class Cpu
         }
     }
 
-    private static ushort FetchInstruction()
+    private ushort FetchInstruction()
         => InstructionFetcher.Fetch(_context);
 
-    private static void DecodeAndExecuteInstruction(ushort instruction)
+    private void DecodeAndExecuteInstruction(ushort instruction)
         => InstructionDecoderExecutor.DecodeAndExec(instruction, _context);
 
-    private static void InitFonts()
+    private void InitFonts()
     {
         Span<byte> fonts = stackalloc byte[]
         {
@@ -74,13 +75,13 @@ public static class Cpu
     /// <summary>
     /// Initialize the cpu in a loop that always redirect to the initial instruction
     /// </summary>
-    private static void InitMemory()
+    private void InitMemory()
     {
         _context.Memory[InitialAddress] = 0x02;
         _context.Memory[InitialAddress + 1] = 0x00;
     }
 
-    private static void InitRegisters()
+    private void InitRegisters()
     {
         _context.Registers.Pc = InitialAddress;
         _context.Registers.Vf = false;
