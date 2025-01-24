@@ -12,22 +12,22 @@ public static class Cpu
     {
         InitFonts();
         InitMemory();
-        InitPc();
+        InitRegisters();
     }
 
     public static void Start()
     {
         while (true)
         {
-            ExecuteInstruction(DecodeInstruction(FetchInstruction()));
+            DecodeAndExecuteInstruction(FetchInstruction());
         }
     }
 
-    public static void LoadProgram(byte[] program)
+    public static void LoadProgram(ReadOnlySpan<byte> program)
     {
         var initialAddress = InitialAddress;
 
-        foreach (var programByte in program)
+        foreach (byte programByte in program)
         {
             _context.Memory[initialAddress] = programByte;
             initialAddress++;
@@ -35,19 +35,10 @@ public static class Cpu
     }
 
     private static ushort FetchInstruction()
-    {
-        return InstructionFetcher.Fetch(_context);
-    }
+        => InstructionFetcher.Fetch(_context);
 
-    private static int DecodeInstruction(ushort instruction)
-    {
-        throw new NotImplementedException();
-    }
-
-    private static void ExecuteInstruction(int instruction)
-    {
-        throw new NotImplementedException();
-    }
+    private static void DecodeAndExecuteInstruction(ushort instruction)
+        => InstructionDecoderExecutor.DecodeAndExec(instruction, _context);
 
     private static void InitFonts()
     {
@@ -89,8 +80,9 @@ public static class Cpu
         _context.Memory[InitialAddress + 1] = 0x00;
     }
 
-    private static void InitPc()
+    private static void InitRegisters()
     {
         _context.Registers.Pc = InitialAddress;
+        _context.Registers.Vf = false;
     }
 }
