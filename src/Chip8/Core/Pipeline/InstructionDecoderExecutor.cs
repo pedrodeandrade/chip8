@@ -18,7 +18,7 @@ public static class InstructionDecoderExecutor
         switch (opcode)
         {
             case 0xD:
-                ExecDisplayInstruction(
+                DecodeAndExecDisplayInstruction(
                     registerX: GetLeastSignificantNibble(instructionBytes[0]),
                     registerY: GetMostSignificantNibble(instructionBytes[1]),
                     n: GetLeastSignificantNibble(instructionBytes[1]),
@@ -30,7 +30,7 @@ public static class InstructionDecoderExecutor
         }
     }
 
-    private static void ExecDisplayInstruction(byte registerX, byte registerY, byte n, CpuContext context)
+    private static void DecodeAndExecDisplayInstruction(byte registerX, byte registerY, byte n, CpuContext context)
     {
         if (n > MaxBytesPerSprite)
             throw new Exception($"Maximum of {MaxBytesPerSprite} bytes can be displayed at once");
