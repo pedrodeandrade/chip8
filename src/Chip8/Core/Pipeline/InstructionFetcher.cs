@@ -9,7 +9,10 @@ public static class InstructionFetcher
 
         context.Registers.Pc += 2;
 
-        // The idea here is to get the first and second bytes from the instruction and store then side to side in a 16-bit variable to form the instruction
+        /*
+         * The idea here is to get the first and second bytes from the instruction
+         * and store then side to side in a 16-bit variable to form the instruction
+         */
         return (ushort)(((0x0000 | firstHalfInstruction) << 8) | secondHalfInstruction);
     }
 }
