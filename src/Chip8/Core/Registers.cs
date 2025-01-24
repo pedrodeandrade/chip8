@@ -9,4 +9,6 @@ public sealed class Registers
     public ushort I { get; set; }
 
     public ushort Pc { get; set; }
+
+    public bool Vf { get; set; }
 }
