@@ -4,9 +4,9 @@ public sealed record XyVariantInstruction : Instruction
 {
     public XyVariantInstruction(ReadOnlySpan<byte> instruction) : base(instruction)
     {
-        X = (byte)(MostSignificatByte & 0X01);
-        Y = (byte)(LeastSignificantByte & 0X10);
-        Variant = (byte)(LeastSignificantByte & 0X01);
+        X = (byte)(MostSignificantByte & 0x0F);
+        Y = (byte)((LeastSignificantByte & 0xF0) >> 4);
+        Variant = (byte)(LeastSignificantByte & 0x0F);
     }
 
     /// <summary>

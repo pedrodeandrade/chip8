@@ -4,7 +4,7 @@ public sealed record XVariantInstruction : Instruction
 {
     public XVariantInstruction(ReadOnlySpan<byte> instruction) : base(instruction)
     {
-        X = (byte)(MostSignificatByte & 0X01);
+        X = (byte)(MostSignificantByte & 0x0F);
         Variant = LeastSignificantByte;
     }
 

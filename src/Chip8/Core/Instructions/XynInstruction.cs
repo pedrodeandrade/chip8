@@ -4,9 +4,9 @@ public sealed record XynInstruction : Instruction
 {
     public XynInstruction(ReadOnlySpan<byte> instruction) : base(instruction)
     {
-        X = (byte)(MostSignificatByte & 0X01);
-        Y = (byte)(LeastSignificantByte & 0X10);
-        N = (byte)(LeastSignificantByte & 0X01);
+        X = (byte)(MostSignificantByte & 0x0F);
+        Y = (byte)((LeastSignificantByte & 0xF0) >> 4);
+        N = (byte)(LeastSignificantByte & 0x0F);
     }
 
     /// <summary>

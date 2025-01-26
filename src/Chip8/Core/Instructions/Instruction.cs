@@ -1,20 +1,20 @@
 namespace Chip8.Core.Instructions;
 
-public abstract record Instruction
+public record Instruction
 {
-    protected Instruction(ReadOnlySpan<byte> instruction)
+    public Instruction(ReadOnlySpan<byte> instruction)
     {
         if (instruction.Length != 2)
             throw new Exception("A instruction can only 2 bytes long!");
 
-        MostSignificatByte = instruction[0];
+        MostSignificantByte = instruction[0];
         LeastSignificantByte = instruction[1];
-        OpCode = (byte)(MostSignificatByte >> 4);
+        OpCode = (byte)(MostSignificantByte >> 4);
     }
 
     public byte OpCode { get; }
 
-    public byte MostSignificatByte { get; }
+    protected byte MostSignificantByte { get; }
 
-    public byte LeastSignificantByte { get; }
+    protected byte LeastSignificantByte { get; }
 }
