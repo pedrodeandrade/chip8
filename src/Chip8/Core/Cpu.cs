@@ -8,6 +8,8 @@ public sealed class Cpu
     private const ushort InitialAddress = 0x200;
 
     private readonly CpuContext _context;
+    private readonly InstructionFetcher _instructionFetcher = new();
+    private readonly InstructionDecoderExecutor _instructionDecoderExecutor = new();
 
     public Cpu(CpuContext context)
     {
@@ -37,10 +39,10 @@ public sealed class Cpu
     }
 
     private Instruction FetchInstruction()
-        => InstructionFetcher.Fetch(_context);
+        => _instructionFetcher.Fetch(_context);
 
     private void DecodeAndExecuteInstruction(Instruction instruction)
-        => InstructionDecoderExecutor.DecodeAndExec(instruction, _context);
+        => _instructionDecoderExecutor.DecodeAndExec(instruction, _context);
 
     private void InitFonts()
     {

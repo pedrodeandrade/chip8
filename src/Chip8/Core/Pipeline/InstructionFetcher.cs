@@ -2,9 +2,9 @@ using Chip8.Core.Instructions;
 
 namespace Chip8.Core.Pipeline;
 
-public static class InstructionFetcher
+public class InstructionFetcher
 {
-    public static Instruction Fetch(CpuContext context)
+    public Instruction Fetch(CpuContext context)
     {
         var instruction = (ReadOnlySpan<byte>)context.Memory
             .AsSpan()

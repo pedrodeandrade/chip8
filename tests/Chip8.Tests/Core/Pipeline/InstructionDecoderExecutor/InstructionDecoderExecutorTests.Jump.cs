@@ -1,5 +1,6 @@
 using Chip8.Core;
 using Chip8.Core.Instructions;
+using InstructionDecoderExecutorImpl = Chip8.Core.Pipeline.InstructionDecoderExecutor;
 
 namespace Chip8.Tests.Core.Pipeline.InstructionDecoderExecutor;
 
@@ -10,8 +11,9 @@ public class InstructionDecoderExecutorTests_Jump
     {
         var cpuContext = new CpuContext();
         var instruction = new NnnInstruction([0x1F, 0xFF]);
+        var sut = new InstructionDecoderExecutorImpl();
 
-        Assert.Throws(() => Chip8.Core.Pipeline.InstructionDecoderExecutor.DecodeAndExec(instruction, cpuContext));
+        Assert.Throws(() => sut.DecodeAndExec(instruction, cpuContext));
     }
 
     [Test]
@@ -19,8 +21,9 @@ public class InstructionDecoderExecutorTests_Jump
     {
         var cpuContext = new CpuContext();
         var instruction = new NnnInstruction([0x11, 0x4B]);
+        var sut = new InstructionDecoderExecutorImpl();
 
-        Assert.Throws(() => Chip8.Core.Pipeline.InstructionDecoderExecutor.DecodeAndExec(instruction, cpuContext));
+        Assert.Throws(() => sut.DecodeAndExec(instruction, cpuContext));
     }
 
     [Test]
@@ -31,8 +34,9 @@ public class InstructionDecoderExecutorTests_Jump
     {
         var cpuContext = new CpuContext();
         var instruction = new NnnInstruction(instructionBytes);
+        var sut = new InstructionDecoderExecutorImpl();
 
-        Chip8.Core.Pipeline.InstructionDecoderExecutor.DecodeAndExec(instruction, cpuContext);
+        sut.DecodeAndExec(instruction, cpuContext);
 
         await Assert.That(cpuContext.Registers.Pc).IsEqualTo(jumpAddress);
     }

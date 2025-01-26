@@ -1,6 +1,6 @@
 using Chip8.Core;
 using Chip8.Core.Instructions;
-using Sut = Chip8.Core.Pipeline.InstructionDecoderExecutor;
+using InstructionDecoderExecutorImpl = Chip8.Core.Pipeline.InstructionDecoderExecutor;
 
 namespace Chip8.Tests.Core.Pipeline.InstructionDecoderExecutor;
 
@@ -23,8 +23,9 @@ public class InstructionDecoderExecutorTests_SetVRegister
     {
         (var indexRegisterV, var value, var instructionBytes) = testData;
         var cpuContext = new CpuContext();
+        var sut = new InstructionDecoderExecutorImpl();
 
-        Sut.DecodeAndExec(new XkkInstruction(instructionBytes), cpuContext);
+        sut.DecodeAndExec(new XkkInstruction(instructionBytes), cpuContext);
 
         await Assert.That(cpuContext.Registers.V[indexRegisterV]).IsEqualTo(value);
     }

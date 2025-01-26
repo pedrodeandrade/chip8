@@ -3,12 +3,12 @@ using Chip8.View;
 
 namespace Chip8.Core.Pipeline;
 
-public static class InstructionDecoderExecutor
+public class InstructionDecoderExecutor
 {
     private const byte MaxBytesPerSprite = 15;
     private const short MemoryMaxAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb
 
-    public static void DecodeAndExec(Instruction instruction, CpuContext context)
+    public void DecodeAndExec(Instruction instruction, CpuContext context)
     {
         switch (instruction.OpCode)
         {
@@ -29,7 +29,7 @@ public static class InstructionDecoderExecutor
         }
     }
 
-    private static void DecodeAndExecJumpInstruction(NnnInstruction instruction, CpuContext context)
+    private void DecodeAndExecJumpInstruction(NnnInstruction instruction, CpuContext context)
     {
         var jumpAddress = instruction.Nnn;
 
@@ -40,10 +40,10 @@ public static class InstructionDecoderExecutor
         context.Registers.Pc = jumpAddress;
     }
 
-    private static void DecodeAndExecSetVRegisterInstruction(XkkInstruction instruction, CpuContext context)
+    private void DecodeAndExecSetVRegisterInstruction(XkkInstruction instruction, CpuContext context)
         => context.Registers.V[instruction.X] = instruction.Kk;
 
-    private static void DecodeAndExecDisplayInstruction(XynInstruction instruction, CpuContext context)
+    private void DecodeAndExecDisplayInstruction(XynInstruction instruction, CpuContext context)
     {
         if (instruction.N > MaxBytesPerSprite)
             throw new Exception($"Maximum of {MaxBytesPerSprite} bytes can be displayed at once");
