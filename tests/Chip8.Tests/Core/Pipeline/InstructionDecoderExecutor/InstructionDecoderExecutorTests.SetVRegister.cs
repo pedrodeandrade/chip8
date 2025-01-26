@@ -8,7 +8,7 @@ public class InstructionDecoderExecutorTests_SetVRegister
 {
     public static class SetVRegisterDataSource
     {
-        public static IEnumerable<Func<(byte, byte, byte[])>> AdditionTestData()
+        public static IEnumerable<Func<(byte, byte, byte[])>> TestData()
         {
             foreach (var i in Enumerable.Range(0x0, 0x10))
             {
@@ -18,7 +18,7 @@ public class InstructionDecoderExecutorTests_SetVRegister
     }
 
     [Test]
-    [MethodDataSource(typeof(SetVRegisterDataSource), nameof(SetVRegisterDataSource.AdditionTestData))]
+    [MethodDataSource(typeof(SetVRegisterDataSource), nameof(SetVRegisterDataSource.TestData))]
     public async Task DecodeAndExec_ShouldSetVRegisterToValeu_WhenSetVRegisterInstructionIsExecutedSuccessfully((byte , byte, byte[]) testData)
     {
         (var indexRegisterV, var value, var instructionBytes) = testData;
