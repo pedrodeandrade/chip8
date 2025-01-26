@@ -19,7 +19,7 @@ public class InstructionDecoderExecutorTests_SetVRegister
 
     [Test]
     [MethodDataSource(typeof(SetVRegisterDataSource), nameof(SetVRegisterDataSource.TestData))]
-    public async Task DecodeAndExec_ShouldSetVRegisterToValeu_WhenSetVRegisterInstructionIsExecutedSuccessfully((byte , byte, byte[]) testData)
+    public async Task DecodeAndExec_ShouldSetVRegisterToValue_WhenSetVRegisterInstructionIsExecutedSuccessfully((byte , byte, byte[]) testData)
     {
         (var indexRegisterV, var value, var instructionBytes) = testData;
         var cpuContext = new CpuContext();
