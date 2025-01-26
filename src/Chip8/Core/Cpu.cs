@@ -1,3 +1,4 @@
+using Chip8.Core.Instructions;
 using Chip8.Core.Pipeline;
 
 namespace Chip8.Core;
@@ -35,10 +36,10 @@ public sealed class Cpu
         }
     }
 
-    private ushort FetchInstruction()
+    private Instruction FetchInstruction()
         => InstructionFetcher.Fetch(_context);
 
-    private void DecodeAndExecuteInstruction(ushort instruction)
+    private void DecodeAndExecuteInstruction(Instruction instruction)
         => InstructionDecoderExecutor.DecodeAndExec(instruction, _context);
 
     private void InitFonts()
