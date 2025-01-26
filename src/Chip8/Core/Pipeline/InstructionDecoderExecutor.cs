@@ -15,6 +15,9 @@ public static class InstructionDecoderExecutor
             case 0x1:
                 DecodeAndExecJumpInstruction((NnnInstruction)instruction, context);
                 break;
+            case 0x6:
+                DecodeAndExecSetVRegisterInstruction((XkkInstruction)instruction, context);
+                break;
             case 0xD:
                 DecodeAndExecDisplayInstruction(
                     (XynInstruction)instruction,
@@ -30,12 +33,15 @@ public static class InstructionDecoderExecutor
     {
         var jumpAddress = instruction.Nnn;
 
-        // Instruction are two bytes long and they have to be in addresses multiples of 2 (aligned by 2 bytes);
+        // Instruction are two bytes long, and they have to be in addresses multiples of 2 (aligned by 2 bytes);
         if (jumpAddress > MemoryMaxAddress - 1 || jumpAddress % 2 != 0)
-            throw new Exception("Invalid address to jump");
+            throw new Exception("Invalid address to jump!");
 
         context.Registers.Pc = jumpAddress;
     }
+
+    private static void DecodeAndExecSetVRegisterInstruction(XkkInstruction instruction, CpuContext context)
+        => context.Registers.V[instruction.X] = instruction.Kk;
 
     private static void DecodeAndExecDisplayInstruction(XynInstruction instruction, CpuContext context)
     {

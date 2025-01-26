@@ -5,7 +5,7 @@ public sealed record XkkInstruction : Instruction
     public XkkInstruction(ReadOnlySpan<byte> instruction) : base(instruction)
     {
         X = (byte)(MostSignificantByte & 0x0F);
-        Kk = MostSignificantByte;
+        Kk = LeastSignificantByte;
     }
 
     /// <summary>
