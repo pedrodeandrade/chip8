@@ -18,6 +18,9 @@ public class InstructionDecoderExecutor
             case 0x6:
                 DecodeAndExecSetVRegisterInstruction((XkkInstruction)instruction, context);
                 break;
+            case 0x7:
+                DecodeAndExecAddToVRegisterInstruction((XkkInstruction)instruction, context);
+                break;
             case 0xD:
                 DecodeAndExecDisplayInstruction(
                     (XynInstruction)instruction,
@@ -42,6 +45,9 @@ public class InstructionDecoderExecutor
 
     private void DecodeAndExecSetVRegisterInstruction(XkkInstruction instruction, CpuContext context)
         => context.Registers.V[instruction.X] = instruction.Kk;
+
+    private void DecodeAndExecAddToVRegisterInstruction(XkkInstruction instruction, CpuContext context)
+        => context.Registers.V[instruction.X] += instruction.Kk;
 
     private void DecodeAndExecDisplayInstruction(XynInstruction instruction, CpuContext context)
     {
