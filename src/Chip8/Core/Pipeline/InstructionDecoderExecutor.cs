@@ -6,20 +6,35 @@ namespace Chip8.Core.Pipeline;
 public static class InstructionDecoderExecutor
 {
     private const byte MaxBytesPerSprite = 15;
+    private const short MemoryMaxAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb
 
     public static void DecodeAndExec(Instruction instruction, CpuContext context)
     {
         switch (instruction.OpCode)
         {
+            case 0x1:
+                DecodeAndExecJumpInstruction((NnnInstruction)instruction, context);
+                break;
             case 0xD:
                 DecodeAndExecDisplayInstruction(
                     (XynInstruction)instruction,
-                    context: context
+                    context
                 );
                 break;
             default:
                 throw new NotImplementedException();
         }
+    }
+
+    private static void DecodeAndExecJumpInstruction(NnnInstruction instruction, CpuContext context)
+    {
+        var jumpAddress = instruction.Nnn;
+
+        // Instruction are two bytes long and they have to be in addresses multiples of 2 (aligned by 2 bytes);
+        if (jumpAddress > MemoryMaxAddress - 1 || jumpAddress % 2 != 0)
+            throw new Exception("Invalid address to jump");
+
+        context.Registers.Pc = jumpAddress;
     }
 
     private static void DecodeAndExecDisplayInstruction(XynInstruction instruction, CpuContext context)
