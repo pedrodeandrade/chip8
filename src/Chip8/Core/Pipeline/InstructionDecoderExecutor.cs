@@ -1,3 +1,4 @@
+using Chip8.Core.Instructions;
 using Chip8.View;
 
 namespace Chip8.Core.Pipeline;
@@ -6,22 +7,13 @@ public static class InstructionDecoderExecutor
 {
     private const byte MaxBytesPerSprite = 15;
 
-    public static void DecodeAndExec(ushort instruction, CpuContext context)
+    public static void DecodeAndExec(Instruction instruction, CpuContext context)
     {
-        ReadOnlySpan<byte> instructionBytes = stackalloc byte[]
-        {
-            (byte)(instruction >> 8),
-            (byte)instruction
-        };
-
-        byte opcode = GetMostSignificantNibble(instructionBytes[0]);
-        switch (opcode)
+        switch (instruction.OpCode)
         {
             case 0xD:
                 DecodeAndExecDisplayInstruction(
-                    registerX: GetLeastSignificantNibble(instructionBytes[0]),
-                    registerY: GetMostSignificantNibble(instructionBytes[1]),
-                    n: GetLeastSignificantNibble(instructionBytes[1]),
+                    (XynInstruction)instruction,
                     context: context
                 );
                 break;
@@ -30,17 +22,17 @@ public static class InstructionDecoderExecutor
         }
     }
 
-    private static void DecodeAndExecDisplayInstruction(byte registerX, byte registerY, byte n, CpuContext context)
+    private static void DecodeAndExecDisplayInstruction(XynInstruction instruction, CpuContext context)
     {
-        if (n > MaxBytesPerSprite)
+        if (instruction.N > MaxBytesPerSprite)
             throw new Exception($"Maximum of {MaxBytesPerSprite} bytes can be displayed at once");
 
         ReadOnlySpan<byte> sprites = context.Memory
             .AsSpan()
-            .Slice(context.Registers.I, n);
+            .Slice(context.Registers.I, instruction.N);
 
-        var x = context.Registers.V[registerX];
-        var currentY = context.Registers.V[registerY];
+        var x = context.Registers.V[instruction.X];
+        var currentY = context.Registers.V[instruction.Y];
         var spriteErasedPixel = false;
 
         foreach (var spriteByte in sprites)
@@ -56,10 +48,4 @@ public static class InstructionDecoderExecutor
 
         context.Registers.Vf = spriteErasedPixel;
     }
-
-    private static byte GetLeastSignificantNibble(byte data)
-        => (byte)(0X0F & data);
-
-    private static byte GetMostSignificantNibble(byte data)
-        => (byte)(data >> 4);
 }
