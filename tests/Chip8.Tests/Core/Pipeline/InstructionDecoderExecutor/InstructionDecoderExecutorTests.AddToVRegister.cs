@@ -50,18 +50,4 @@ public class InstructionDecoderExecutorTests_AddToVRegister
 
         await Assert.That(cpuContext.Registers.V[indexRegisterV]).IsEqualTo((byte)(initialRegisterValue + valueToAdd));
     }
-
-    // [Test]
-    //
-    // public async Task DecodeAndExec_ShouldAddValueToVRegisterAndWrapAroundTheResult_WhenTheValueAddedResultsInAnOverflow((byte, byte, byte, byte[]) testData)
-    // {
-    //     (var indexRegisterV, var initialRegisterValue, var valueToAdd, var instructionBytes) = testData;
-    //     var cpuContext = new CpuContext();
-    //     cpuContext.Registers.V[indexRegisterV] = initialRegisterValue;
-    //     var sut = new InstructionDecoderExecutorImpl();
-    //
-    //     sut.DecodeAndExec(new XkkInstruction(instructionBytes), cpuContext);
-    //
-    //     await Assert.That(cpuContext.Registers.V[indexRegisterV]).IsEqualTo((byte)(initialRegisterValue + valueToAdd));
-    // }
 }
