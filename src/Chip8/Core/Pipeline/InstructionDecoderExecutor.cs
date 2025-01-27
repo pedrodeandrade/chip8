@@ -3,7 +3,7 @@ using Chip8.View;
 
 namespace Chip8.Core.Pipeline;
 
-public class InstructionDecoderExecutor
+public sealed class InstructionDecoderExecutor
 {
     private const byte MaxBytesPerSprite = 15;
     private const short MemoryMaxAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb

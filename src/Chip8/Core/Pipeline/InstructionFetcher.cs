@@ -2,7 +2,7 @@ using Chip8.Core.Instructions;
 
 namespace Chip8.Core.Pipeline;
 
-public class InstructionFetcher
+public sealed class InstructionFetcher
 {
     public Instruction Fetch(CpuContext context)
     {
