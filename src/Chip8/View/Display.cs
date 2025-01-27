@@ -76,6 +76,12 @@ public static class Display
         Console.Write(displayContent);
     }
 
+    public static void Clear()
+    {
+        _pixels.SetAll(false);
+        Render();
+    }
+
     /// <summary>
     /// Gets the bit position in the pixels array by the display position
     /// </summary>

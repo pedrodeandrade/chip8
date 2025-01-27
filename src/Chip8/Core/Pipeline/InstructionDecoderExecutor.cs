@@ -12,6 +12,9 @@ public sealed class InstructionDecoderExecutor
     {
         switch (instruction.OpCode)
         {
+            case 0x0:
+                DecodeAndExecClearScreenInstruction();
+                break;
             case 0x1:
                 DecodeAndExecJumpInstruction((NnnInstruction)instruction, context);
                 break;
@@ -25,15 +28,15 @@ public sealed class InstructionDecoderExecutor
                 DecodeAndExecSetIndexRegisterInstruction((NnnInstruction)instruction, context);
                 break;
             case 0xD:
-                DecodeAndExecDisplayInstruction(
-                    (XynInstruction)instruction,
-                    context
-                );
+                DecodeAndExecDisplayInstruction((XynInstruction)instruction, context);
                 break;
             default:
                 throw new NotImplementedException();
         }
     }
+
+    private void DecodeAndExecClearScreenInstruction()
+        => Display.Clear();
 
     private void DecodeAndExecJumpInstruction(NnnInstruction instruction, CpuContext context)
     {
