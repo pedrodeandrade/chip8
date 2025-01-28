@@ -4,7 +4,7 @@ namespace Chip8.Core.Pipeline;
 
 public sealed class InstructionFetcher
 {
-    public Instruction Fetch(CpuContext context)
+    public Instruction FetchAndDecode(CpuContext context)
     {
         var instruction = (ReadOnlySpan<byte>)context.Memory
             .AsSpan()

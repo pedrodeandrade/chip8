@@ -3,42 +3,42 @@ using Chip8.View;
 
 namespace Chip8.Core.Pipeline;
 
-public sealed class InstructionDecoderExecutor
+public sealed class InstructionExecutor
 {
     private const byte MaxBytesPerSprite = 15;
     private const short MemoryMaxAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb
 
-    public void DecodeAndExec(Instruction instruction, CpuContext context)
+    public void Execute(Instruction instruction, CpuContext context)
     {
         switch (instruction.OpCode)
         {
             case 0x0:
-                DecodeAndExecClearScreenInstruction();
+                ExecuteClearScreenInstruction();
                 break;
             case 0x1:
-                DecodeAndExecJumpInstruction((NnnInstruction)instruction, context);
+                ExecuteJumpInstruction((NnnInstruction)instruction, context);
                 break;
             case 0x6:
-                DecodeAndExecSetVRegisterInstruction((XkkInstruction)instruction, context);
+                ExecuteSetVRegisterToImmediateInstruction((XkkInstruction)instruction, context);
                 break;
             case 0x7:
-                DecodeAndExecAddToVRegisterInstruction((XkkInstruction)instruction, context);
+                ExecuteAddToVRegisterInstruction((XkkInstruction)instruction, context);
                 break;
             case 0xA:
-                DecodeAndExecSetIndexRegisterInstruction((NnnInstruction)instruction, context);
+                ExecuteSetIndexRegisterInstruction((NnnInstruction)instruction, context);
                 break;
             case 0xD:
-                DecodeAndExecDisplayInstruction((XynInstruction)instruction, context);
+                ExecuteDisplayInstruction((XynInstruction)instruction, context);
                 break;
             default:
                 throw new NotImplementedException();
         }
     }
 
-    private void DecodeAndExecClearScreenInstruction()
+    private void ExecuteClearScreenInstruction()
         => Display.Clear();
 
-    private void DecodeAndExecJumpInstruction(NnnInstruction instruction, CpuContext context)
+    private void ExecuteJumpInstruction(NnnInstruction instruction, CpuContext context)
     {
         var jumpAddress = instruction.Nnn;
 
@@ -49,16 +49,16 @@ public sealed class InstructionDecoderExecutor
         context.Registers.Pc = jumpAddress;
     }
 
-    private void DecodeAndExecSetVRegisterInstruction(XkkInstruction instruction, CpuContext context)
+    private void ExecuteSetVRegisterToImmediateInstruction(XkkInstruction instruction, CpuContext context)
         => context.Registers.V[instruction.X] = instruction.Kk;
 
-    private void DecodeAndExecAddToVRegisterInstruction(XkkInstruction instruction, CpuContext context)
+    private void ExecuteAddToVRegisterInstruction(XkkInstruction instruction, CpuContext context)
         => context.Registers.V[instruction.X] += instruction.Kk;
 
-    private void DecodeAndExecSetIndexRegisterInstruction(NnnInstruction instruction, CpuContext context)
+    private void ExecuteSetIndexRegisterInstruction(NnnInstruction instruction, CpuContext context)
         => context.Registers.I = instruction.Nnn;
 
-    private void DecodeAndExecDisplayInstruction(XynInstruction instruction, CpuContext context)
+    private void ExecuteDisplayInstruction(XynInstruction instruction, CpuContext context)
     {
         if (instruction.N > MaxBytesPerSprite)
             throw new Exception($"Maximum of {MaxBytesPerSprite} bytes can be displayed at once");

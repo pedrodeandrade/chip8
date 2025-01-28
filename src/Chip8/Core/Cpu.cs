@@ -9,7 +9,7 @@ public sealed class Cpu
 
     private readonly CpuContext _context;
     private readonly InstructionFetcher _instructionFetcher = new();
-    private readonly InstructionDecoderExecutor _instructionDecoderExecutor = new();
+    private readonly InstructionExecutor _instructionExecutor = new();
 
     public Cpu(CpuContext context)
     {
@@ -23,7 +23,7 @@ public sealed class Cpu
     {
         while (true)
         {
-            DecodeAndExecuteInstruction(FetchInstruction());
+            ExecuteInstruction(FetchAndDecodeInstruction());
         }
     }
 
@@ -38,11 +38,11 @@ public sealed class Cpu
         }
     }
 
-    private Instruction FetchInstruction()
-        => _instructionFetcher.Fetch(_context);
+    private Instruction FetchAndDecodeInstruction()
+        => _instructionFetcher.FetchAndDecode(_context);
 
-    private void DecodeAndExecuteInstruction(Instruction instruction)
-        => _instructionDecoderExecutor.DecodeAndExec(instruction, _context);
+    private void ExecuteInstruction(Instruction instruction)
+        => _instructionExecutor.Execute(instruction, _context);
 
     private void InitFonts()
     {

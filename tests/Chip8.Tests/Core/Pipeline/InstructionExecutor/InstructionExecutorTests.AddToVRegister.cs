@@ -3,15 +3,15 @@ using Chip8.Core.Instructions;
 using TUnit.Assertions;
 using TUnit.Assertions.Extensions;
 using TUnit.Core;
-using InstructionDecoderExecutorImpl = Chip8.Core.Pipeline.InstructionDecoderExecutor;
+using InstructionExecutorImpl = Chip8.Core.Pipeline.InstructionExecutor;
 
-namespace Chip8.Tests.Core.Pipeline.InstructionDecoderExecutor;
+namespace Chip8.Tests.Core.Pipeline.InstructionExecutor;
 
-public class InstructionDecoderExecutorTests_AddToVRegister
+public class InstructionExecutorTests_AddToVRegister
 {
     public static class AddToVRegisterDataSource
     {
-        const byte opCode = 0x70;
+        private const byte OpCode = 0x70;
 
         public static IEnumerable<Func<(byte, byte, byte, byte[])>> AddValuesWithoutOverflowTestData()
         {
@@ -20,7 +20,7 @@ public class InstructionDecoderExecutorTests_AddToVRegister
 
             foreach (var i in Enumerable.Range(0x0, 0x10))
             {
-                yield return () => ((byte)i, initialRegisterValue, valueToAdd, [(byte)(opCode + (byte)i), valueToAdd]);
+                yield return () => ((byte)i, initialRegisterValue, valueToAdd, [(byte)(OpCode + (byte)i), valueToAdd]);
             }
         }
 
@@ -31,7 +31,7 @@ public class InstructionDecoderExecutorTests_AddToVRegister
 
             foreach (var i in Enumerable.Range(0x0, 0x10))
             {
-                yield return () => ((byte)i, initialRegisterValue, valueToAdd, [(byte)(opCode + (byte)i), valueToAdd]);
+                yield return () => ((byte)i, initialRegisterValue, valueToAdd, [(byte)(OpCode + (byte)i), valueToAdd]);
             }
         }
     }
@@ -39,14 +39,14 @@ public class InstructionDecoderExecutorTests_AddToVRegister
     [Test]
     [MethodDataSource(typeof(AddToVRegisterDataSource), nameof(AddToVRegisterDataSource.AddValuesWithoutOverflowTestData))]
     [MethodDataSource(typeof(AddToVRegisterDataSource), nameof(AddToVRegisterDataSource.AddValuesWithOverflowTestData))]
-    public async Task DecodeAndExec_ShouldAddValueToVRegister_WhenTheValueAddedToVRegisterInstructionIsExecuted((byte, byte, byte, byte[]) testData)
+    public async Task Execute_ShouldAddValueToVRegister_WhenTheValueAddedToVRegisterInstructionIsExecuted((byte, byte, byte, byte[]) testData)
     {
         (var indexRegisterV, var initialRegisterValue, var valueToAdd, var instructionBytes) = testData;
         var cpuContext = new CpuContext();
         cpuContext.Registers.V[indexRegisterV] = initialRegisterValue;
-        var sut = new InstructionDecoderExecutorImpl();
+        var sut = new InstructionExecutorImpl();
 
-        sut.DecodeAndExec(new XkkInstruction(instructionBytes), cpuContext);
+        sut.Execute(new XkkInstruction(instructionBytes), cpuContext);
 
         await Assert.That(cpuContext.Registers.V[indexRegisterV]).IsEqualTo((byte)(initialRegisterValue + valueToAdd));
     }
