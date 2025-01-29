@@ -6,7 +6,8 @@ namespace Chip8.Core.Pipeline;
 public sealed class InstructionExecutor
 {
     private const byte MaxBytesPerSprite = 15;
-    private const short MemoryMaxAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb
+    private const ushort MemoryMaxAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb
+    private const byte InstructionLengthInBytes = 2;
 
     public void Execute(Instruction instruction, CpuContext context)
     {
@@ -27,6 +28,9 @@ public sealed class InstructionExecutor
             case 0x8:
                 ExecuteLogicalArithmeticInstruction((XyVariantInstruction)instruction, context);
                 break;
+            case 0x9:
+                ExecuteSkipNextInstructionInstruction((XyVariantInstruction)instruction, context);
+                break;
             case 0xA:
                 ExecuteSetIndexRegisterInstruction((NnnInstruction)instruction, context);
                 break;
@@ -46,7 +50,7 @@ public sealed class InstructionExecutor
         var jumpAddress = instruction.Nnn;
 
         // Instruction are two bytes long, and they have to be in addresses multiples of 2 (aligned by 2 bytes);
-        if (jumpAddress > MemoryMaxAddress - 1 || jumpAddress % 2 != 0)
+        if (jumpAddress > MemoryMaxAddress - 1 || jumpAddress % InstructionLengthInBytes != 0)
             throw new Exception("Invalid address to jump!");
 
         context.Registers.Pc = jumpAddress;
@@ -133,6 +137,14 @@ public sealed class InstructionExecutor
 
                 break;
         }
+    }
+
+    private void ExecuteSkipNextInstructionInstruction(XyVariantInstruction instruction, CpuContext context)
+    {
+        if (context.Registers.V[instruction.X] == context.Registers.V[instruction.Y])
+            return;
+
+        context.Registers.Pc += InstructionLengthInBytes;
     }
 
     private void ExecuteSetIndexRegisterInstruction(NnnInstruction instruction, CpuContext context)
