@@ -6,7 +6,7 @@ namespace Chip8.Core.Pipeline;
 public sealed class InstructionExecutor
 {
     private const byte MaxBytesPerSprite = 15;
-    private const ushort MemoryMaxAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb
+    private const ushort MaxMemoryAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb
     private const byte InstructionLengthInBytes = 2;
 
     public void Execute(Instruction instruction, CpuContext context)
@@ -34,6 +34,9 @@ public sealed class InstructionExecutor
             case 0xA:
                 ExecuteSetIndexRegisterInstruction((NnnInstruction)instruction, context);
                 break;
+            case 0xB:
+                ExecuteJumpWithOffsetInstruction((XkkInstruction)instruction, context);
+                break;
             case 0xD:
                 ExecuteDisplayInstruction((XynInstruction)instruction, context);
                 break;
@@ -50,7 +53,7 @@ public sealed class InstructionExecutor
         var jumpAddress = instruction.Nnn;
 
         // Instruction are two bytes long, and they have to be in addresses multiples of 2 (aligned by 2 bytes);
-        if (jumpAddress > MemoryMaxAddress - 1 || jumpAddress % InstructionLengthInBytes != 0)
+        if (jumpAddress > MaxMemoryAddress - 1 || jumpAddress % InstructionLengthInBytes != 0)
             throw new Exception("Invalid address to jump!");
 
         context.Registers.Pc = jumpAddress;
@@ -149,6 +152,19 @@ public sealed class InstructionExecutor
 
     private void ExecuteSetIndexRegisterInstruction(NnnInstruction instruction, CpuContext context)
         => context.Registers.I = instruction.Nnn;
+
+    private void ExecuteJumpWithOffsetInstruction(XkkInstruction instruction, CpuContext context)
+    {
+        // Base address is 0xXKK (X and KK are parts of the instruction)
+        var baseAddress = (ushort)((ushort)(instruction.X << 8) + instruction.Kk);
+        var jumpAddress = (ushort)(baseAddress + context.Registers.V[instruction.X]);
+
+        // Jump address can't be bigger than 0XFFE (4094 of 4096 bytes)
+        if (jumpAddress > MaxMemoryAddress - 1)
+            throw new Exception("Invalid jump address");
+
+        context.Registers.Pc = jumpAddress;
+    }
 
     private void ExecuteDisplayInstruction(XynInstruction instruction, CpuContext context)
     {
