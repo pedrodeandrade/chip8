@@ -52,8 +52,8 @@ public sealed class InstructionExecutor
     {
         var jumpAddress = instruction.Nnn;
 
-        // Instruction are two bytes long, and they have to be in addresses multiples of 2 (aligned by 2 bytes);
-        if (jumpAddress > MaxMemoryAddress - 1 || jumpAddress % InstructionLengthInBytes != 0)
+        // Jump address can't be bigger than 0XFFE (4094 of 4096 bytes)
+        if (jumpAddress > MaxMemoryAddress - 1)
             throw new Exception("Invalid address to jump!");
 
         context.Registers.Pc = jumpAddress;

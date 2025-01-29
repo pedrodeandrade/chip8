@@ -20,16 +20,6 @@ public class InstructionExecutorTests_Jump
     }
 
     [Test]
-    public void Execute_ShouldThrowException_WhenJumpInstructionIsExecutedAndJumpAddressIsNotTwoBytesAligned()
-    {
-        var cpuContext = new CpuContext();
-        var instruction = new NnnInstruction([0x11, 0x4B]);
-        var sut = new InstructionExecutorImpl();
-
-        Assert.Throws(() => sut.Execute(instruction, cpuContext));
-    }
-
-    [Test]
     [Arguments((ushort)0xFFE, new byte[] { 0x1F, 0xFE })]
     [Arguments((ushort)0x112, new byte[] { 0x11, 0x12 })]
     [Arguments((ushort)0x14A, new byte[] { 0x11, 0x4A })]
