@@ -8,6 +8,7 @@ public sealed class InstructionExecutor
     private const byte MaxBytesPerSprite = 15;
     private const ushort MaxMemoryAddress = 0xFFF; // 0 to 4095 = 4096 bytes -> 4kb
     private const byte InstructionLengthInBytes = 2;
+    private readonly Random _randomValueGenerator = new(Guid.NewGuid().GetHashCode());
 
     public void Execute(Instruction instruction, CpuContext context)
     {
@@ -36,6 +37,9 @@ public sealed class InstructionExecutor
                 break;
             case 0xB:
                 ExecuteJumpWithOffsetInstruction((XkkInstruction)instruction, context);
+                break;
+            case 0xC:
+                ExecuteRandomInstruction((XkkInstruction)instruction, context);
                 break;
             case 0xD:
                 ExecuteDisplayInstruction((XynInstruction)instruction, context);
@@ -164,6 +168,12 @@ public sealed class InstructionExecutor
             throw new Exception("Invalid jump address");
 
         context.Registers.Pc = jumpAddress;
+    }
+
+    private void ExecuteRandomInstruction(XkkInstruction instruction, CpuContext context)
+    {
+        var random = (byte)_randomValueGenerator.Next(0, 255);
+        context.Registers.V[instruction.X] = (byte)(random & instruction.Kk);
     }
 
     private void ExecuteDisplayInstruction(XynInstruction instruction, CpuContext context)
