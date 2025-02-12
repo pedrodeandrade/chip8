@@ -10,7 +10,7 @@ namespace Chip8.Tests.Core.Pipeline.InstructionExecutor;
 public class InstructionExecutorTests_JumpWithOffset
 {
     [Test]
-    public async Task Executor_ShouldSetPcToVxPlusOffsetLocation_WhenJumpWithOffsetInstructionIsExecutedSuccessfully()
+    public async Task Execute_ShouldSetPcToVxPlusOffsetLocation_WhenJumpWithOffsetInstructionIsExecutedSuccessfully()
     {
         var vxIndex = 0xF; // x
         var offset = (byte)0x10; // kk
@@ -25,7 +25,7 @@ public class InstructionExecutorTests_JumpWithOffset
     }
 
     [Test]
-    public Task Executor_ShouldThrowException_WhenJumpWithOffsetInstructionIsExecutedAndJumpAddressIsLongerThanTwelveBits()
+    public Task Execute_ShouldThrowException_WhenJumpWithOffsetInstructionIsExecutedAndJumpAddressIsLongerThanTwelveBits()
     {
         var vxIndex = 0xF; // x
         var offset = (byte)0xFF; // kk
