@@ -1,22 +1,25 @@
 using Chip8.Core;
+using Chip8.Core.Instructions;
 using Chip8.Core.Pipeline;
 
 namespace Chip8.Tests.Core.Pipeline;
 
 public class InstructionFetcherTests
 {
-    [Test]
-    public async Task InstructionFetcher_ShouldReturnsCorrectInstruction_WhenInstructionIsRequested()
-    {
-        var loadedInstruction = (ushort)0x1000;
+     [Test]
+     [Arguments((ushort)0x1000, typeof(NnnInstruction))]
+     [Arguments((ushort)0x3000, typeof(XkkInstruction))]
+     [Arguments((ushort)0x5000, typeof(XyVariantInstruction))]
+     [Arguments((ushort)0xD000, typeof(XynInstruction))]
+     [Arguments((ushort)0xF000, typeof(XVariantInstruction))]
+     public async Task InstructionFetcher_ShouldReturnsCorrectInstruction_WhenInstructionIsRequested(ushort instruction, Type instructionType) {
+         var context = new CpuContext();
+         context.Registers.Pc = 0x200;
+         context.Memory[0x200] = (byte)(instruction >> 8);
+         context.Memory[0x201] = (byte)instruction;
 
-        var context = new CpuContext();
-        context.Registers.Pc = 0x200;
-        context.Memory[0x200] = (byte)(loadedInstruction >> 8);
-        context.Memory[0x201] = (byte)loadedInstruction;
+         Instruction fetchedInstruction = new InstructionFetcher().FetchAndDecode(context);
 
-        ushort fetchedInstruction = InstructionFetcher.Fetch(context);
-
-        await Assert.That(loadedInstruction).IsEqualTo(fetchedInstruction);
-    }
+         await Assert.That(fetchedInstruction).IsTypeOf(instructionType);
+     }
 }
